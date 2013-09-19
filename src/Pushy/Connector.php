@@ -13,7 +13,7 @@ class Connector {
 
   public function __construct($access_key) {
     $this->_access_key = $access_key;
-    $_guzzle = new GuzzleClient();
+    $this->_guzzle = new GuzzleClient();
   }
 
   private function __make_request($url) {
