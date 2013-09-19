@@ -4,8 +4,8 @@ use Guzzle\Http\Client as GuzzleClient;
 
 class Connector{
   private $_session;
-  private $_session_key;
-  private $_access_key;
+  private $_session_key = "NO SESSION KEY";
+  private $_access_key = "NO ACCESS KEY";
 
   public function __construct($access_key){
     $this->_access_key = $access_key;
@@ -29,6 +29,7 @@ class Connector{
     $replacements = array();
     $replacements['%ACCESS_KEY%'] = $this->_access_key;
     $replacements['%SESSION_KEY%'] = $this->_session_key;
+    return $replacements;
   }
 
   private function __url_parameter_replace($url){
