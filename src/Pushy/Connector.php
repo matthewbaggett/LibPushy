@@ -83,7 +83,7 @@ class Connector {
       }
     }
 
-    return true;
+    return $response_object;
   }
 
   public function send_message($channel, $message) {
@@ -109,7 +109,7 @@ class Connector {
       throw new AccessException("Could not send message: {$response_object->message}.");
     }
 
-    return $response_object->id;
+    return $response_object;
 
   }
 }
