@@ -10,6 +10,7 @@ class Connector {
   private $_access_key = "NO ACCESS KEY";
   private $_guzzle;
   private $_guzzle_response;
+  private $_call_log = array();
 
   public function __construct($access_key) {
     $this->_access_key = $access_key;
@@ -17,6 +18,7 @@ class Connector {
   }
 
   private function __make_request($url) {
+    $this->_call_log[] = $url;
     $request = $this->_guzzle->get($url);
 
     // Send the request and get the response
@@ -26,6 +28,10 @@ class Connector {
     }
 
     return $this->_guzzle_response->getBody(true);
+  }
+
+  public function get_call_log(){
+    return $this->_call_log;
   }
 
   private function __session_key_expirey_limit() {
