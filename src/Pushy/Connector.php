@@ -86,6 +86,13 @@ class Connector {
 
   public function send_message($channel, $message) {
     $this->__session_begin();
+
+    try{
+      $this->create_channel($channel);
+    }catch(AccessException $e){
+      // Do nothing.
+    }
+
     $url = $this->__url_parameter_replace(
       Constants::Service . "/" . Constants::Endpoint_Message_Create,
       array(
