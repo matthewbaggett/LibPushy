@@ -1,0 +1,13 @@
+{
+    "name": "fouroneone/libpushy",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Baggett",
+            "email": "matthew@baggett.me"
+        }
+    ],
+    "require": {
+
+    }
+}
