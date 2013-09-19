@@ -105,11 +105,11 @@ class Connector {
 
     $response_object = json_decode($this->__make_request($url));
 
-    krumo($response_object);
-
-    if($response_object->state !== "OKAY"){
-      throw new AccessException("Could not send message. {$response_object->message}");
+    if($response_object->message == $message){
+      throw new AccessException("Could not send message. {$response_object->message}.");
     }
+
+    return true;
 
   }
 }
