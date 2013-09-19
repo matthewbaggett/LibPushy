@@ -71,7 +71,7 @@ class Connector {
     $url = $this->__url_parameter_replace(
       Constants::Service . "/" . Constants::Endpoint_Message_Create,
       array(
-           '%MESSAGE%' => $messsage,
+           '%MESSAGE%' => $message,
            '%CHANNEL%' => $channel
       )
     );
