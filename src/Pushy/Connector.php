@@ -83,6 +83,8 @@ class Connector {
       }
     }
 
+    krumo($response_object);
+
     return $response_object->name;
   }
 
