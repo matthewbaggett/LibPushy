@@ -66,6 +66,11 @@ class Connector {
     }
   }
 
+  private function isJson($string) {
+    json_decode($string);
+    return (json_last_error() == JSON_ERROR_NONE);
+  }
+
   public function create_channel($channel){
     $this->__session_begin();
     $url = $this->__url_parameter_replace(
@@ -103,13 +108,18 @@ class Connector {
       )
     );
 
-    $response_object = json_decode($this->__make_request($url));
+    $response_encoded = $this->__make_request($url);
+    if($this->isJson($response_encoded)){
+      $response_object = json_decode($response_encoded);
 
-    if($response_object->message !== $message){
-      throw new AccessException("Could not send message: {$response_object->message}.");
+      if($response_object->message !== $message){
+        throw new AccessException("Could not send message: {$response_object->message}.");
+      }
+
+      return $response_object;
+    }else{
+      throw new AccessException("Response was not JSON: " . $response_encoded);
     }
-
-    return $response_object;
 
   }
 }
