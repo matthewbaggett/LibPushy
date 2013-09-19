@@ -33,6 +33,25 @@ class Connector {
     return time() - 60;
   }
 
+  private function __url_parameter_replace_parameters($options = null) {
+    $replacements = array();
+    $replacements['%ACCESS_KEY%'] = $this->_access_key;
+    $replacements['%SESSION_KEY%'] = $this->_session_key;
+    if(count($options) > 0){
+      foreach($options as $k => $v){
+        $replacements[$k] = $v;
+      }
+    }
+    return $replacements;
+  }
+
+  private function __url_parameter_replace($url, $options = null) {
+    foreach ($this->__url_parameter_replace_parameters($options) as $parameter_name => $parameter_value) {
+      $url = str_replace($parameter_name, $parameter_value, $url);
+    }
+    return $url;
+  }
+
   private function __session_begin() {
     if ($this->_session_key_expirey <= $this->__session_key_expirey_limit()) {
 
@@ -47,21 +66,18 @@ class Connector {
     }
   }
 
-  private function __url_parameter_replace_parameters() {
-    $replacements = array();
-    $replacements['%ACCESS_KEY%'] = $this->_access_key;
-    $replacements['%SESSION_KEY%'] = $this->_session_key;
-    return $replacements;
-  }
-
-  private function __url_parameter_replace($url) {
-    foreach ($this->__url_parameter_replace_parameters() as $parameter_name => $parameter_value) {
-      $url = str_replace($parameter_name, $parameter_value, $url);
-    }
-    return $url;
-  }
-
   public function send_message($channel, $message) {
     $this->__session_begin();
+    $url = $this->__url_parameter_replace(
+      Constants::Service . "/" . Constants::Endpoint_Message_Create,
+      array(
+           '%MESSAGE%' => $messsage,
+           '%CHANNEL%' => $channel
+      )
+    );
+
+    $response_object = json_decode($this->__make_request($url_session_begin));
+    krumo($response_object);
+
   }
 }
