@@ -77,8 +77,10 @@ class Connector {
 
     $response_object = json_decode($this->__make_request($url));
 
-    if($response_object->state !== "OKAY"){
-      throw new AccessException("Could not create channel. {$response_object->message}");
+    if(isset($response_object->state)){
+      if($response_object->state !== "OKAY"){
+        throw new AccessException("Could not create channel. {$response_object->message}");
+      }
     }
 
     return $response_object->name;
