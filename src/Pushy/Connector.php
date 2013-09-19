@@ -105,7 +105,7 @@ class Connector {
 
     $response_object = json_decode($this->__make_request($url));
 
-    if($response_object->message == $message){
+    if($response_object->message !== $message){
       throw new AccessException("Could not send message. {$response_object->message}.");
     }
 
