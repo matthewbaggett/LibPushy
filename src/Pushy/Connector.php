@@ -109,7 +109,6 @@ class Connector {
     );
 
     $response_encoded = $this->__make_request($url);
-    krumo($response_encoded);
     if($this->isJson($response_encoded)){
       $response_object = json_decode($response_encoded);
 
