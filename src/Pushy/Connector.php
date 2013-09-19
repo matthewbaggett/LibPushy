@@ -1,51 +1,67 @@
 <?php
 namespace Pushy;
+
 use Guzzle\Http\Client as GuzzleClient;
 
-class Connector{
+class Connector {
   private $_session;
   private $_session_key = "NO SESSION KEY";
+  private $_session_key_expirey;
   private $_access_key = "NO ACCESS KEY";
+  private $_guzzle;
+  private $_guzzle_response;
 
-  public function __construct($access_key){
+  public function __construct($access_key) {
     $this->_access_key = $access_key;
+    $_guzzle = new GuzzleClient();
   }
 
-  private function __session_begin(){
-    $client = new GuzzleClient();
-
-    // Create a request that has a query string and an X-Foo header
-    $url_session_begin = Constants::Service . "/" . Constants::Endpoint_Session_Begin;
-    $url_session_begin = $this->__url_parameter_replace($url_session_begin);
-    $request = $client->get($url_session_begin);
+  private function __make_request($url) {
+    $request = $this->_guzzle->get($url);
 
     // Send the request and get the response
-    $response = $request->send();
-    if(!$response->getStatusCode() == 200){
-      throw new \Pushy\AccessException("Accessing {$url_session_begin} responded {$response->getStatusCode()}");
+    $this->_guzzle_response = $request->send();
+    if (!$this->_guzzle_response->getStatusCode() == 200) {
+      throw new \Pushy\AccessException("Accessing {$url} responded {$this->_guzzle_response->getStatusCode()}");
     }
 
-    $response_object = json_decode($response->getBody(true));
-
-    krumo($response);
-    krumo($response_object);
+    return $this->_guzzle_response->getBody(true);
   }
 
-  private function __url_parameter_replace_parameters(){
+  private function __session_key_expirey_limit() {
+    // Hopefully, this will take account of some local-time drift...
+    return time() - 60;
+  }
+
+  private function __session_begin() {
+    if ($this->_session_key_expirey <= $this->__session_key_expirey_limit()) {
+
+      // Create a request that has a query string and an X-Foo header
+      $url_session_begin = Constants::Service . "/" . Constants::Endpoint_Session_Begin;
+      $url_session_begin = $this->__url_parameter_replace($url_session_begin);
+
+      $response_object = json_decode($this->__make_request($url_session_begin));
+
+      $this->_session_key = $response_object->session_key;
+      $this->_session_key_expirey = strtotime($response_object->expires_at);
+    }
+  }
+
+  private function __url_parameter_replace_parameters() {
     $replacements = array();
     $replacements['%ACCESS_KEY%'] = $this->_access_key;
     $replacements['%SESSION_KEY%'] = $this->_session_key;
     return $replacements;
   }
 
-  private function __url_parameter_replace($url){
-    foreach($this->__url_parameter_replace_parameters() as $parameter_name => $parameter_value){
+  private function __url_parameter_replace($url) {
+    foreach ($this->__url_parameter_replace_parameters() as $parameter_name => $parameter_value) {
       $url = str_replace($parameter_name, $parameter_value, $url);
     }
     return $url;
   }
 
-  public function send_message($channel, $message){
+  public function send_message($channel, $message) {
     $this->__session_begin();
   }
 }
