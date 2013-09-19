@@ -21,8 +21,14 @@ class Connector{
 
     // Send the request and get the response
     $response = $request->send();
+    if(!$response->getStatusCode() == 200){
+      throw new \Pushy\AccessException("Accessing {$url_session_begin} responded {$response->getStatusCode()}");
+    }
 
-    var_dump($response);
+    $response_object = json_decode($response->getBody(true));
+
+    krumo($response);
+    krumo($response_object);
   }
 
   private function __url_parameter_replace_parameters(){
