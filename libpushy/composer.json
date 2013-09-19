@@ -4,10 +4,10 @@
     "authors": [
         {
             "name": "Matthew Baggett",
-            "email": "matthew@baggett.me"
+            "email": "matthew@fouroneone.us"
         }
     ],
     "require": {
-
+      "guzzle/guzzle": "3.7.x"
     }
 }
