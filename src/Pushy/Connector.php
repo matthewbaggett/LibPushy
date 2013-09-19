@@ -76,7 +76,7 @@ class Connector {
       )
     );
 
-    $response_object = json_decode($this->__make_request($url_session_begin));
+    $response_object = json_decode($this->__make_request($url));
     krumo($response_object);
 
   }
