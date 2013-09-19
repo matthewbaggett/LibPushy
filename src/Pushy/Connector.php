@@ -83,9 +83,7 @@ class Connector {
       }
     }
 
-    krumo($response_object);
-
-    return $response_object->name;
+    return true;
   }
 
   public function send_message($channel, $message) {
